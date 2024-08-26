@@ -4,6 +4,7 @@
 # Time Spent: x:xx
 
 import string
+import random
 from ps4a import get_permutations
 
 ### HELPER CODE ###
@@ -175,9 +176,30 @@ class EncryptedSubMessage(SubMessage):
         
         Hint: use your function from Part 4A
         '''
-        decrypted_message_list=[]
+        counter_real_words=0
+        decrypted_dict={}
+        max_real_words=0
+        decrypted_message=[]
         for elt in get_permutations(VOWELS_LOWER):
-            decrypted_message_list.append(self.apply_transpose()))
+            encrypted_dictionnary=self.build_transpose_dict(elt)
+            decrypted_message.append(self.apply_transpose(encrypted_dictionnary))
+        decrypted_message_copy=decrypted_message[::]
+        for elt in decrypted_message_copy:
+            for word in elt.split():
+                if is_word(self.valid_words, word):
+                    counter_real_words+=1
+            decrypted_dict[elt]=counter_real_words
+            counter_real_words=0
+        max_real_words=max(decrypted_dict.values())
+        print("max : ", max_real_words)
+        decrypted_dict_copy=decrypted_dict.copy()
+        for elt in decrypted_dict_copy.keys():   #je stocke l'ensemble des décodages qui ont le maximum de mots #contenus dans la liste des mots
+            if decrypted_dict_copy[elt] < max_real_words:
+                del(decrypted_dict[elt])
+        print(decrypted_dict)
+        list_message=[elt for elt in decrypted_dict.keys()]#je transforme cet ensemble en liste pour pouvoir choisir un des décodages au hasard
+        choix=random.choice(list_message)
+        return choix
     
 
 if __name__ == '__main__':
